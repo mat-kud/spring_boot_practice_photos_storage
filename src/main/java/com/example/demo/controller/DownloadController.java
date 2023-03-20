@@ -18,7 +18,7 @@ public class DownloadController {
     }
 
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable String id){
+    public ResponseEntity<byte[]> download(@PathVariable int id){
         Photo photo = photosService.get(id);
         if(photo == null){
             System.out.println("Problem");

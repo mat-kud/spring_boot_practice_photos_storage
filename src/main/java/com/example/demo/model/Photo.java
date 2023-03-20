@@ -2,14 +2,16 @@ package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("PHOTOS")
 public class Photo {
+    @Id
     private int id;
     @NotNull
     private String fileName;
-
     private String contentType;
-
     @JsonIgnore
     private byte[] data;
 
