@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Category;
 import com.example.demo.model.Photo;
 import com.example.demo.repository.PhotosRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class PhotosService {
         return repository.findAll();
     }
 
-    public Photo get(int id) {
+    public Photo getById(int id) {
         return repository.findById(id).orElseThrow(null);
     }
 
@@ -24,10 +25,11 @@ public class PhotosService {
         repository.deleteById(id);
     }
 
-    public Photo save(String fileName, String contentType, byte[] data) {
+    public Photo save(String fileName, String contentType, String category, byte[] data) {
         Photo photo = new Photo();
         photo.setFileName(fileName);
         photo.setContentType(contentType);
+        photo.setCategory(Category.valueOf(category.toUpperCase()));
         photo.setData(data);
         repository.save(photo);
         return photo;

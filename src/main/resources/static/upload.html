@@ -3,19 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <style>
+    #wrapper > *{
+      display: block;
+      margin: 10px;
+    }
+    #upload-button{
+      color: white;
+      background-color: #555555;
+      font-size: 16px;
+      padding: 10px 24px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
 
 <h2>Photo Upload</h2>
-
-<input id="fileupload" type="file" name="fileupload" />
-<button id="upload-button" onclick="uploadFile()"> Upload </button>
+<div id="wrapper">
+  <input id="fileupload" type="file" name="fileupload" />
+  <div id="dropdownlist">
+    <label>Choose a category:</label>
+    <select name="category" id="category">
+      <option value="VACATION">Vacation</option>
+      <option value="WORK">Work</option>
+      <option value="HOBBY">Hobby</option>
+      <option value="DOG">Dog</option>
+      <option value="FRIENDS">Friends</option>
+    </select>
+  </div>
+  <button id="upload-button" onclick="uploadFile()"> Upload </button>
+</div>
 
 <script>
     async function uploadFile() {
         let formData = new FormData();
         formData.append("data", fileupload.files[0]);
+        const select = document.getElementById("category");
+        formData.append("category", select.value);
         await fetch('http://localhost:3000/photos', {
             method: "POST",
             body: formData

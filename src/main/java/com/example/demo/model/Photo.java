@@ -8,10 +8,11 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("PHOTOS")
 public class Photo {
     @Id
-    private int id;
+    private Integer id;
     @NotNull
     private String fileName;
     private String contentType;
+    private Category category;
     @JsonIgnore
     private byte[] data;
 
@@ -53,5 +54,13 @@ public class Photo {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

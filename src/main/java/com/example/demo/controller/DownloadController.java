@@ -19,7 +19,7 @@ public class DownloadController {
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable int id){
-        Photo photo = photosService.get(id);
+        Photo photo = photosService.getById(id);
         if(photo == null){
             System.out.println("Problem");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

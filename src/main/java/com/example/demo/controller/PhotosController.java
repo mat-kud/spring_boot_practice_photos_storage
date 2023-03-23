@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.FileUploadRequest;
 import com.example.demo.model.Photo;
 import com.example.demo.service.PhotosService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,7 +28,7 @@ public class PhotosController {
 
     @GetMapping("/photos/{id}")
     public Photo get(@PathVariable int id){
-        Photo photo = photosService.get(id);
+        Photo photo = photosService.getById(id);
         if(photo == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -39,9 +41,12 @@ public class PhotosController {
         photosService.remove(id);
     }
 
-    @PostMapping("/photos")
-    public Photo create(@RequestPart("data") MultipartFile file) throws IOException {
-        return photosService.save(file.getOriginalFilename(), file.getContentType(), file.getBytes());
+    @PostMapping(value = "/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Photo create(@ModelAttribute FileUploadRequest uploadRequest) throws IOException {
+        return photosService.save(uploadRequest.getData().getOriginalFilename(),
+                uploadRequest.getData().getContentType(),
+                uploadRequest.getCategory(),
+                uploadRequest.getData().getBytes());
     }
 
 
