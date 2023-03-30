@@ -12,6 +12,7 @@ public class Photo {
     @NotNull
     private String fileName;
     private String contentType;
+    @NotNull
     private Category category;
     @JsonIgnore
     private byte[] data;

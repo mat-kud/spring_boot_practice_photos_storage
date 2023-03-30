@@ -21,8 +21,8 @@ public class DownloadController {
     public ResponseEntity<byte[]> download(@PathVariable int id){
         Photo photo = photosService.getById(id);
         if(photo == null){
-            System.out.println("Problem");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            System.err.println("Problem");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
         }
 
         byte[] data = photo.getData();

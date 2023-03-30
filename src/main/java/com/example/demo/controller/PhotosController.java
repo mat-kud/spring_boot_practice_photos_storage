@@ -1,15 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Category;
 import com.example.demo.model.FileUploadRequest;
 import com.example.demo.model.Photo;
 import com.example.demo.service.PhotosService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class PhotosController {
@@ -34,6 +35,11 @@ public class PhotosController {
         }
 
         return photo;
+    }
+
+    @GetMapping("/photos/findByCategory")
+    public List<Photo> getByCategory(@RequestParam List<Category> values){
+        return photosService.getByCategory(values);
     }
 
     @DeleteMapping("/photos/{id}")

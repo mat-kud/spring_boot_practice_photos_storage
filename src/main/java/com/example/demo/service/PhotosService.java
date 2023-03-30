@@ -5,6 +5,10 @@ import com.example.demo.model.Photo;
 import com.example.demo.repository.PhotosRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class PhotosService {
     private final PhotosRepository repository;
@@ -18,7 +22,11 @@ public class PhotosService {
     }
 
     public Photo getById(int id) {
-        return repository.findById(id).orElseThrow(null);
+        return repository.findById(id).orElse(null);
+    }
+
+    public List<Photo> getByCategory(List<Category> categoryList){
+        return repository.getByCategory(categoryList);
     }
 
     public void remove(int id) {
