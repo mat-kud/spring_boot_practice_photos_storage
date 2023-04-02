@@ -1,9 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.Category;
 import com.example.demo.model.FileUploadRequest;
 import com.example.demo.model.Photo;
 import com.example.demo.service.PhotosService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class PhotosController {
 
     private final PhotosService photosService;
+    Logger LOGGER = LoggerFactory.getLogger(PhotosController.class);
 
     public PhotosController(PhotosService photosService) {
         this.photosService = photosService;
@@ -24,35 +30,49 @@ public class PhotosController {
 
     @GetMapping("/photos")
     public Iterable<Photo> getAll(){
-        return photosService.getAll();
+        return photosService.getAllPhotos();
     }
 
     @GetMapping("/photos/{id}")
     public Photo get(@PathVariable int id){
         Photo photo = photosService.getById(id);
         if(photo == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Photo with id=%d not found", id));
         }
 
         return photo;
     }
 
-    @GetMapping("/photos/findByCategory")
+    @GetMapping("/photos/filter/category")
     public List<Photo> getByCategory(@RequestParam List<Category> values){
-        return photosService.getByCategory(values);
+        List<Photo> list  =  photosService.getByCategory(values);
+        if(list.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Photos with such categories not found");
+        }
+        return list;
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/photos/{id}")
     public void delete(@PathVariable int id){
         photosService.remove(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Photo create(@ModelAttribute FileUploadRequest uploadRequest) throws IOException {
+        if(!checkIfFileIsImage(uploadRequest.getData().getContentType())){
+            throw new BadRequestException("File " + uploadRequest.getData().getOriginalFilename() + " is not an image");
+        }
         return photosService.save(uploadRequest.getData().getOriginalFilename(),
                 uploadRequest.getData().getContentType(),
                 uploadRequest.getCategory(),
-                uploadRequest.getData().getBytes());
+                uploadRequest.getData().getBytes(),
+                uploadRequest.getDateCreated());
+    }
+
+    private boolean checkIfFileIsImage(String contentType){
+        return contentType.matches("image/[a-zA-Z]{1,5}");
     }
 
 

@@ -39,6 +39,7 @@
 <script>
     async function uploadFile() {
         let formData = new FormData();
+        const fileUpload = document.getElementById("fileupload");
         formData.append("data", fileupload.files[0]);
         const select = document.getElementById("category");
         formData.append("category", select.value);

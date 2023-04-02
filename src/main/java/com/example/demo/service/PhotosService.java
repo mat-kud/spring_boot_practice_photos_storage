@@ -5,6 +5,10 @@ import com.example.demo.model.Photo;
 import com.example.demo.repository.PhotosRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -17,7 +21,7 @@ public class PhotosService {
         this.repository = repository;
     }
 
-    public Iterable<Photo> getAll() {
+    public Iterable<Photo> getAllPhotos() {
         return repository.findAll();
     }
 
@@ -33,12 +37,14 @@ public class PhotosService {
         repository.deleteById(id);
     }
 
-    public Photo save(String fileName, String contentType, String category, byte[] data) {
+    public Photo save(String fileName, String contentType, String category, byte[] data, LocalDateTime dateCreated)  {
         Photo photo = new Photo();
         photo.setFileName(fileName);
         photo.setContentType(contentType);
         photo.setCategory(Category.valueOf(category.toUpperCase()));
         photo.setData(data);
+        photo.setDateCreated(dateCreated);
+
         repository.save(photo);
         return photo;
     }
