@@ -16,9 +16,16 @@ server:
   port: 3000
 
 logging:
+  file:
+    name: photos.log
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
   level:
-    org.org.springframework: DEBUG
+    org.springframework: ERROR
     org.springframework.jdbc: DEBUG
+    com.example.demo.*: INFO
+
 
 
 

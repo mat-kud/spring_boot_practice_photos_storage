@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,8 +50,8 @@ public class DownloadControllerIntegrationTest {
 
         //then
         byte[] responseBytes = mvcResult.getResponse().getContentAsByteArray();
-        MediaType responseContentType = MediaType.parseMediaType(mvcResult.getResponse().getContentType());
-        String responseFilename = mvcResult.getResponse().getHeader("Content-Disposition")
+        MediaType responseContentType = MediaType.parseMediaType(Objects.requireNonNull(mvcResult.getResponse().getContentType()));
+        String responseFilename = Objects.requireNonNull(mvcResult.getResponse().getHeader("Content-Disposition"))
                 .split("=")[1]
                 .replace("\"", "");
 
@@ -69,6 +71,6 @@ public class DownloadControllerIntegrationTest {
         mockMvc.perform(get("/download/{id}", nonExistentFileId))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException))
-                .andExpect(result -> assertEquals("404 NOT_FOUND \"File not found\"", result.getResolvedException().getMessage()));
+                .andExpect(result -> assertEquals("404 NOT_FOUND \"File not found\"", Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 }

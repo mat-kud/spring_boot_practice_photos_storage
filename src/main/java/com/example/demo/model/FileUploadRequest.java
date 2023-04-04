@@ -1,10 +1,12 @@
 package com.example.demo.model;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
 public class FileUploadRequest {
+    @NotNull
     private MultipartFile data;
     private String category;
     private LocalDateTime dateCreated;
