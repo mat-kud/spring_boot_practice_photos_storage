@@ -1,43 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Photo;
-import com.example.demo.service.PhotosService;
+import com.example.demo.service.DownloadService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
 public class DownloadController {
 
-    private final PhotosService photosService;
-    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadController.class);
+    private final DownloadService downloadService;
 
-    public DownloadController(PhotosService photosService) {
-        this.photosService = photosService;
+    public DownloadController(DownloadService downloadService) {
+        this.downloadService = downloadService;
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable int id){
-        Photo photo = photosService.getById(id);
-        if(photo == null){
-            LOGGER.error(String.format("Photo not found, id=%d", id));
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
-        }
-
-        byte[] data = photo.getData();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.valueOf(photo.getContentType()));
-        ContentDisposition build = ContentDisposition.builder("attachment")
-                .filename(photo.getFileName())
-                .build();
-        headers.setContentDisposition(build);
-        LOGGER.info(String.format("Downloading the photo, name=%s", photo.getFileName()));
-        return new ResponseEntity<>(data, headers, HttpStatus.OK);
+    public ResponseEntity<byte[]> download(@PathVariable int id) throws IOException {
+        return downloadService.download(id);
     }
 }
